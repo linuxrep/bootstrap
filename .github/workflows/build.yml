@@ -1,0 +1,38 @@
+name: Build Bootstrap ZIP and upload as Artifact
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build Bootstrap ZIP and upload as Artifact
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: sudo apt-get install zip -y
+
+      - name: Create Setup Scripts
+        run: |
+          cat <<EOF > setup1.sh
+          #!/bin/bash
+          mv setup2.sh flash-bootstrap-arm.zip $HOME
+          EOF
+          
+          cat <<EOF > setup2.sh
+          #!/bin/bash
+          pkg install zip -y
+          unzip flash-bootstrap-arm.zip
+          EOF
+
+      - name: Create ZIP
+        run: zip -r flash-bootstrap-arm.zip .
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: flash-bootstrap-arm
+          path: flash-bootstrap-arm.zip
