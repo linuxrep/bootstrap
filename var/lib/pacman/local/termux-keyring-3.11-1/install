@@ -1,0 +1,9 @@
+post_install() {
+post_upgrade
+}
+post_upgrade() {
+if [ ! -d /data/data/com.termux/files/usr/etc/pacman.d/gnupg/ ]; then
+  pacman-key --init
+fi
+pacman-key --populate
+}

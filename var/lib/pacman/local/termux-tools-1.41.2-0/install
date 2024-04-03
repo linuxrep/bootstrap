@@ -1,0 +1,8 @@
+pre_install() {
+
+for f in asia/packages.nscdn.top china/mirrors.dgut.edu.cn china/mirrors.hit.edu.cn china/mirrors.njupt.edu.cn china/mirrors.scau.edu.cn europe/cdn.lumito.net europe/mirror.termux.dv europe/termux.sahilister.in north_america/packages.termux.dev oceania/mirrors.wale.id.au russia/mirror.surf; do
+    if test -f "/data/data/com.termux/files/usr/etc/termux/mirrors/$f"; then
+        echo "Deleting removed mirror: $f"; rm -f "/data/data/com.termux/files/usr/etc/termux/mirrors/$f";
+    fi
+done
+}

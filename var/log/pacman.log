@@ -1,0 +1,18 @@
+[2024-04-03T13:26:45+0200] [PACMAN] Running 'pacman -Syu'
+[2024-04-03T13:26:45+0200] [PACMAN] synchronizing package lists
+[2024-04-03T13:26:50+0200] [PACMAN] starting full system upgrade
+[2024-04-03T13:26:52+0200] [ALPM] transaction started
+[2024-04-03T13:26:52+0200] [ALPM] warning: /data/data/com.termux/files/usr/etc/makepkg.conf installed as /data/data/com.termux/files/usr/etc/makepkg.conf.pacnew
+[2024-04-03T13:26:53+0200] [ALPM] warning: /data/data/com.termux/files/usr/etc/pacman.conf installed as /data/data/com.termux/files/usr/etc/pacman.conf.pacnew
+[2024-04-03T13:26:53+0200] [ALPM] upgraded pacman (6.0.2-13 -> 6.1.0-0)
+[2024-04-03T13:26:53+0200] [ALPM] transaction completed
+[2024-04-03T13:27:05+0200] [PACMAN] Running 'pacman -S apt'
+[2024-04-03T13:27:11+0200] [ALPM] transaction started
+[2024-04-03T13:27:11+0200] [ALPM] installed libmd (1.1.0-0)
+[2024-04-03T13:27:11+0200] [ALPM] installed zstd (1.5.6-0)
+[2024-04-03T13:27:11+0200] [ALPM] installed dpkg (1.22.2-0)
+[2024-04-03T13:27:11+0200] [ALPM] installed gpgv (2.4.4-0)
+[2024-04-03T13:27:11+0200] [ALPM] installed liblz4 (1.9.4-0)
+[2024-04-03T13:27:11+0200] [ALPM] installed xxhash (0.8.2-0)
+[2024-04-03T13:27:11+0200] [ALPM] installed apt (2.7.10-0)
+[2024-04-03T13:27:11+0200] [ALPM] transaction completed

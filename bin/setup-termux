@@ -1,0 +1,81 @@
+#!/bin/bash
+
+setup_path=/data/data/com.termux/files/usr/etc/skel
+
+function setup_coc() {
+	cp $setup_path/coc-nvim.tar.xz $HOME
+	cd $HOME
+	tar -xvf coc-nvim.tar.xz
+	rm coc-nvim.tar.xz
+	pacman -S nodejs neovim git --noconfirm
+	curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+	read -p "Press Enter or type exit..." choice
+	cat <<EOF > example.txt
+	Run: :PlugInstall
+	Then:
+	PHP: :CocInstall coc-phpls
+	C: :CocInstall coc-clangd
+	Shell: :CocInstall coc-sh
+	Python: :CocInstall coc-pyright
+	HTML: :CocInstall coc-html
+	CSS: :CocInstall coc-css
+	JavaScript: :CocInstall coc-tsserver
+	JSON: :CocInstall coc-json
+	For More look om github
+EOF
+
+	case $choice in
+		exit)
+			exit 0
+			;;
+		*)
+			nvim example.txt
+			rm example.txt
+			;;
+	esac
+}
+
+function setup_bash() {
+	cp $setup_path/bash-control.tar.xz $HOME
+	cd $HOME
+	tar -xvf bash-control.tar.xz 
+	rm bash-control.tar.xz
+}
+
+function setup_alias() {
+	cp $setup_path/alias.tar.xz $HOME
+	cd $HOME
+	tar -xvf alias.tar.xz
+	rm alias.tar.xz
+}
+
+list="options:
+coc-nvim
+bash-control
+alias
+motd
+pacman"
+
+help="usage:
+setupt-termux [option]
+options: Run setup-termux list"
+
+
+if [ "$1" = "coc-nvim" ]; then
+	setup_coc
+elif [ "$1" = "bash-control" ]; then
+	setup_bash
+elif [ "$1" = "alias" ]; then
+	setup_alias
+elif [ "$1" = "motd" ]; then
+	nano $PREFIX/etc/motd
+elif [ "$1" = "list" ]; then
+	echo "$list"
+elif [ "$1" = "pacman" ]; then
+	pacman-key --init
+	pacman-key --populate
+elif [ "$1" = "help" ]; then
+	echo "$help"
+else
+	echo "$help"
+fi

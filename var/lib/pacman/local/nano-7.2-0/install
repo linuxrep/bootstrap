@@ -1,0 +1,14 @@
+post_install() {
+if [ "pacman" = "pacman" ] || [ "$1" = "configure" ] || [ "$1" = "abort-upgrade" ]; then
+if [ -x "/data/data/com.termux/files/usr/bin/update-alternatives" ]; then
+update-alternatives --install 				/data/data/com.termux/files/usr/bin/editor editor /data/data/com.termux/files/usr/bin/nano 20
+fi
+fi
+}
+pre_remove() {
+if [ "pacman" = "pacman" ] || [ "$1" != "upgrade" ]; then
+if [ -x "/data/data/com.termux/files/usr/bin/update-alternatives" ]; then
+update-alternatives --remove editor /data/data/com.termux/files/usr/bin/nano
+fi
+fi
+}

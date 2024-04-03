@@ -1,0 +1,5 @@
+post_install() {
+mkdir -p /data/data/com.termux/files/usr/var/lib/pacman/sync
+mkdir -p /data/data/com.termux/files/usr/var/lib/pacman/local
+mkdir -p /data/data/com.termux/files/usr/var/cache/pacman/pkg
+}

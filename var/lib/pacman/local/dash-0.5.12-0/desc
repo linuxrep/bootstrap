@@ -1,0 +1,36 @@
+%NAME%
+dash
+
+%INSTALLDATE%
+1712094139
+
+%VALIDATION%
+pgp
+
+%BASE%
+dash
+
+%VERSION%
+0.5.12-0
+
+%DESC%
+Small POSIX-compliant implementation of /bin/sh
+
+%SIZE%
+139249
+
+%URL%
+http://gondor.apana.org.au/~herbert/dash/
+
+%LICENSE%
+BSD 3-Clause
+
+%ARCH%
+arm
+
+%BUILDDATE%
+1670817848
+
+%PACKAGER%
+@termux
+
