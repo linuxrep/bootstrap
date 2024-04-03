@@ -1,33 +1,74 @@
-name: Build Bootstrap ZIP and attach to Release
+name: Generate bootstrap archives
+
 on:
-  push:
-    branches:
-      - main
+  schedule:
+    - cron: "0 0 * * 0"
+  workflow_dispatch:
+
+permissions: {} # none
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
 
 jobs:
   build:
-    name: Build Bootstrap ZIP and attach to Release
+    permissions:
+      contents: read # actions/upload-artifact doesn't need contents: write
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch:
+          - aarch64
+          - arm
+          - i686
+          - x86_64
+    if: github.repository == 'termux-pacman/termux-packages'
+    steps:
+      - name: Git clone
+        uses: actions/checkout@v4
+      - name: Create bootstrap archive
+        run: ./scripts/generate-bootstraps.sh --pm pacman --architectures ${{ matrix.arch }}
+      - name: Store artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: bootstrap-archives-${{ matrix.arch }}-${{ github.sha }}
+          path: "*.zip"
+  publish:
+    permissions:
+      contents: write # for git push
+    needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Install Dependencies
-        run: sudo apt-get install zip -y
-
-      - name: Create ZIP
-        run: zip -r flash-bootstrap-arm.zip .
-
-      - name: Get Release ID
-        id: get_release_id
-        run: echo "::set-output name=id::$(curl -sH 'Authorization: token $TOKEN' -H 'Accept: application/vnd.github.v3+json' https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r '.id')"
-
-      - name: Upload Release
-        uses: actions/upload-release-asset@v1
+      - name: Git clone
+        uses: actions/checkout@v4
         with:
-          upload_url: https://uploads.github.com/repos/${{ github.repository }}/releases/${{ steps.get_release_id.outputs.id }}/assets?name=flash-bootstrap-arm.zip
-          asset_path: ./flash-bootstrap-arm.zip
-          asset_name: flash-bootstrap-arm.zip
-          asset_content_type: application/zip
-        env:
-          TOKEN: ${{ secrets.TOKEN }}
+          fetch-depth: 0
+      - name: Fetch bootstrap archives
+        uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+          path: ./
+      - name: Create new tag
+        id: get_tag
+        run: |
+          new_tag="bootstrap-$(date "+%Y.%m.%d")"
+          existing_tag_revision=$(git tag | grep "$new_tag" | sort -r | head -n 1 | cut -d- -f3 | cut -dr -f2)
+          if [ -n "$existing_tag_revision" ]; then
+            tag_rev=$((existing_tag_revision + 1))
+          else
+            tag_rev=1
+          fi
+          new_tag="${new_tag}-r${tag_rev}+pacman-android-7"
+          git tag "$new_tag"
+          git push --tags
+          echo "tag_name=$new_tag" >> $GITHUB_OUTPUT
+      - name: Publish bootstrap zips to GitHub release
+        uses: termux/upload-release-action@v4.2.0
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: "*.zip"
+          file_glob: true
+          release_name: "Bootstrap archives for Termux application"
+          tag: ${{ steps.get_tag.outputs.tag_name }}
+          checksums: sha256,sha512,md5
