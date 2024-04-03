@@ -18,10 +18,14 @@ jobs:
       - name: Create ZIP
         run: zip -r flash-bootstrap-arm.zip .
 
+      - name: Get Release URL
+        id: get_release_url
+        run: echo "::set-output name=url::$(jq -r '.release.upload_url' $GITHUB_EVENT_PATH)"
+
       - name: Upload Release
         uses: actions/upload-release-asset@v1
         with:
-          upload_url: ${{ github.event.release.upload_url }}
+          upload_url: ${{ steps.get_release_url.outputs.url }}
           asset_path: ./flash-bootstrap-arm.zip
           asset_name: flash-bootstrap-arm.zip
           asset_content_type: application/zip
