@@ -1,0 +1,29 @@
+name: Build Bootstrap ZIP and attach to Release
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build Bootstrap ZIP and attach to Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: sudo apt-get install zip -y
+
+      - name: Create ZIP
+        run: zip -r flash-bootstrap-arm.zip .
+
+      - name: Upload Release
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./flash-bootstrap-arm.zip
+          asset_name: flash-bootstrap-arm.zip
+          asset_content_type: application/zip
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
